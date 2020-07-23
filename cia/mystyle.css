@@ -1,0 +1,353 @@
+* {
+    box-sizing: border-box
+}
+
+
+/* ANCHOR Style the tab */
+
+.tab {
+    float: left;
+    border: 0px solid #ccc;
+    background-color: #ffffff;
+    width: 15%;
+    height: 100%;
+    padding-right: 13px;
+}
+
+
+/* Style the buttons inside the tab */
+
+.tab button {
+    display: block;
+    background-color: inherit;
+    color: black;
+    padding: 22px 16px;
+    width: 100%;
+    border: 1px solid #ccc;
+    outline: none;
+    text-align: left;
+    cursor: pointer;
+    transition: 0.3s;
+    font-size: 18px;
+    border-radius: 12px;
+    border-right: 4px solid black;
+    margin: 5px;
+}
+
+
+/* Change background color of buttons on hover */
+
+.tab button:hover {
+    background-color: rgba(226, 75, 75, 0.37);
+    border-right: 4px solid #fd264f;
+}
+
+
+/* Create an active/current "tab button" class */
+
+.tab button.active {
+    background-color: #ccc;
+    border-right: 4px solid #fd264f;
+}
+
+
+/* ANCHOR Style the tab content */
+
+.tabcontent {
+    float: left;
+    padding: 0px 12px;
+    border: 0px solid #ddd;
+    width: 85%;
+    border-left: 3px solid rgba(0, 0, 0, 0.692);
+    border-right: 2px solid rgba(216, 215, 215, 0.493);
+    height: 100%;
+}
+
+
+/* Style the horizontal 3 customized tabs*/
+
+body {
+    background: white;
+    color: black;
+    font-family: "Roboto", Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    font-weight: 300;
+    letter-spacing: 0.01em;
+    line-height: 1.6em;
+    margin: 0;
+    padding: 50px;
+}
+
+h1 {
+    font-size: 40px;
+    line-height: 0.8em;
+    color: black;
+}
+
+a {
+    background: black;
+    color: #fff;
+    display: block;
+    font-size: 12px;
+    line-height: 1em;
+    margin: 0;
+    padding: 5px 110px;
+    position: fixed;
+    top: 20px;
+    right: -100px;
+    text-align: center;
+    text-decoration: none;
+    transform: rotate(45deg);
+}
+
+button:focus,
+input:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+}
+
+.tabs {
+    display: block;
+    display: -webkit-flex;
+    display: -moz-flex;
+    display: flex;
+    -webkit-flex-wrap: wrap;
+    -moz-flex-wrap: wrap;
+    flex-wrap: wrap;
+    margin: 0;
+    overflow: hidden;
+}
+
+.tabs [class^="tab"] label,
+.tabs [class*=" tab"] label {
+    color: red;
+    cursor: pointer;
+    display: block;
+    font-size: 1.1em;
+    font-weight: 300;
+    line-height: 1em;
+    padding: 2rem 0;
+    text-align: center;
+}
+
+.tabs [class^="tab"] [type="radio"],
+.tabs [class*=" tab"] [type="radio"] {
+    border-bottom: 1px solid rgba(255, 145, 154, 0.5);
+    cursor: pointer;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    display: block;
+    width: 100%;
+    -webkit-transition: all 0.3s ease-in-out;
+    -moz-transition: all 0.3s ease-in-out;
+    -o-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
+}
+
+.tabs [class^="tab"] [type="radio"]:hover,
+.tabs [class^="tab"] [type="radio"]:focus,
+.tabs [class*=" tab"] [type="radio"]:hover,
+.tabs [class*=" tab"] [type="radio"]:focus {
+    border-bottom: 2px solid #fd264f;
+}
+
+.tabs [class^="tab"] [type="radio"]:checked,
+.tabs [class*=" tab"] [type="radio"]:checked {
+    border-bottom: 4px solid #fd264f;
+}
+
+.tabs [class^="tab"] [type="radio"]:checked+div,
+.tabs [class*=" tab"] [type="radio"]:checked+div {
+    opacity: 1;
+}
+
+.tabs [class^="tab"] [type="radio"]+div,
+.tabs [class*=" tab"] [type="radio"]+div {
+    display: block;
+    opacity: 0;
+    padding: 2rem 0;
+    width: 90%;
+    -webkit-transition: all 0.3s ease-in-out;
+    -moz-transition: all 0.3s ease-in-out;
+    -o-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
+}
+
+.tabs .tab-2 {
+    width: 33.33%;
+}
+
+.tabs .tab-2 [type="radio"]+div {
+    width: 300%;
+    margin-left: 300%;
+}
+
+.tabs .tab-2 [type="radio"]:checked+div {
+    margin-left: 0;
+}
+
+.tabs .tab-2:last-child [type="radio"]+div {
+    margin-left: 100%;
+}
+
+.tabs .tab-2:nth-child(2) [type="radio"]:checked+div {
+    margin-left: -100%;
+}
+
+.tabs .tab-2:last-child [type="radio"]:checked+div {
+    margin-left: -200%;
+}
+
+.accordion {
+    background-color: #eee;
+    color: black;
+    cursor: pointer;
+    padding: 2px;
+    margin: 5px;
+    width: 100%;
+    border-left: 4px solid black;
+    text-align: left;
+    outline: none;
+    font-size: 18px;
+    transition: 0.4s;
+}
+
+.active,
+.accordion:hover {
+    background-color: rgba(226, 75, 75, 0.37);
+    border-left: 40px solid red;
+}
+
+.accordion:after {
+    color: #777;
+    font-weight: bold;
+    float: right;
+    margin-left: 5px;
+}
+
+.panel {
+    padding: 0 18px;
+    background-color: white;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease-out;
+}
+
+
+/* doc */
+
+@import url("https://fonts.googleapis.com/css?family=Hind:300,400&display=swap");
+.docContainer {
+    margin: 0 auto;
+    padding: 1rem;
+    /* width: 48rem; */
+}
+
+.docAccordion .docAccordion-item {
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.docAccordion .docAccordion-item button[aria-expanded='true'] {
+    border-bottom: 1px solid #f1513c;
+}
+
+.docAccordion button {
+    position: relative;
+    display: block;
+    text-align: left;
+    width: 100%;
+    padding: 0.5em 0;
+    color: black;
+    font-size: 1.15rem;
+    font-weight: 400;
+    border: none;
+    background: none;
+    outline: none;
+}
+
+.docAccordion button:hover,
+.docAccordion button:focus {
+    cursor: pointer;
+    color: #d20303;
+}
+
+.docAccordion button:hover::after,
+.docAccordion button:focus::after {
+    cursor: pointer;
+    color: #d20303;
+    border: 1px solid #d20303;
+}
+
+.docAccordion button .docAccordion-title {
+    padding: 1em 1.5em 1em 0;
+}
+
+.docAccordion button .icon {
+    display: inline-block;
+    position: absolute;
+    top: 18px;
+    right: 0;
+    width: 22px;
+    height: 22px;
+    border: 1px solid;
+    border-radius: 22px;
+}
+
+.docAccordion button .icon::before {
+    display: block;
+    position: absolute;
+    content: '';
+    top: 9px;
+    left: 5px;
+    width: 10px;
+    height: 2px;
+    background: currentColor;
+}
+
+.docAccordion button .icon::after {
+    display: block;
+    position: absolute;
+    content: '';
+    top: 5px;
+    left: 9px;
+    width: 2px;
+    height: 10px;
+    background: currentColor;
+}
+
+.docAccordion button[aria-expanded='true'] {
+    color: #d20303;
+}
+
+.docAccordion button[aria-expanded='true'] .icon::after {
+    width: 0;
+}
+
+.docAccordion button[aria-expanded='true']+.docAccordion-content {
+    opacity: 1;
+    max-height: 20em;
+    -webkit-transition: all 200ms linear;
+    transition: all 200ms linear;
+    will-change: opacity, max-height;
+}
+
+.docAccordion .docAccordion-content {
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    -webkit-transition: opacity 200ms linear, max-height 200ms linear;
+    transition: opacity 200ms linear, max-height 200ms linear;
+    will-change: opacity, max-height;
+}
+
+.docAccordion .docAccordion-content p {
+    font-size: 1rem;
+    margin: 2em 0;
+    color: black;
+}
+
+.docAccordion-docBlock {
+    margin-bottom: 100px;
+}
