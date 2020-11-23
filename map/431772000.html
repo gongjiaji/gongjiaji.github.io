@@ -1,7 +1,13 @@
 <!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<!DOCTYPE html>
+
+<!DOCTYPE html>
 
 <head>
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
 
     <script>
         L_NO_TOUCH = false;
@@ -9,18 +15,22 @@
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/leaflet@1.6.0/dist/leaflet.js"></script>
-    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    {#    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>#}
+    {#    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>#}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js">
     </script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.6.0/dist/leaflet.css" />
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css" />
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.6.0/dist/leaflet.css"/>
+    {#    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" />#}
+    {#    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css" />#}
+    {#    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />#}
     <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css" />
+          href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
     <link rel="stylesheet"
-        href="https://rawcdn.githack.com/python-visualization/folium/master/folium/templates/leaflet.awesome.rotate.css" />
+          href="https://rawcdn.githack.com/python-visualization/folium/master/folium/templates/leaflet.awesome.rotate.css"/>
+    <link rel="stylesheet" href="{% static 'js/jquery-ui-1.12.1/jquery-ui.css' %}">
+    <link rel="stylesheet" href="{% static '/css/bootstrap.css' %}">
+    <script src="{% static '/js/jquery-ui-1.12.1/external/jquery/jquery.js' %}"></script>
+    <script src="{% static '/js/jquery-ui-1.12.1/jquery-ui.js' %}"></script>
     <style>
         html,
         body {
@@ -31,6 +41,21 @@
         }
     </style>
     <style>
+        html, body {
+            height: 100%;
+        }
+        .leaflet-popup-content{
+            font-size: larger;
+            width: auto;
+        }
+
+        #mmsiform {
+            position: fixed;
+            top: 10px;
+            left: 30px;
+            z-index: 999;
+        }
+
         #map {
             position: absolute;
             top: 0;
@@ -41,7 +66,7 @@
     </style>
 
     <meta name="viewport" content="width=device-width,
-                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
     <style>
         #map_ae3f220e3f4f42a990884bc2e9105a46 {
             position: relative;
@@ -53,23 +78,41 @@
     </style>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.2/leaflet.draw.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.2/leaflet.draw.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.2/leaflet.draw.css"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.fullscreen/1.4.2/Control.FullScreen.min.js"></script>
     <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.fullscreen/1.4.2/Control.FullScreen.min.css" />
+          href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.fullscreen/1.4.2/Control.FullScreen.min.css"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-minimap/3.6.1/Control.MiniMap.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet-minimap/3.6.1/Control.MiniMap.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet-minimap/3.6.1/Control.MiniMap.css"/>
     <script src="https://rawcdn.githack.com/ardhi/Leaflet.MousePosition/c32f1c84/src/L.Control.MousePosition.js">
     </script>
     <link rel="stylesheet"
-        href="https://rawcdn.githack.com/ardhi/Leaflet.MousePosition/c32f1c84/src/L.Control.MousePosition.css" />
+          href="https://rawcdn.githack.com/ardhi/Leaflet.MousePosition/c32f1c84/src/L.Control.MousePosition.css"/>
     <script src="https://cdn.jsdelivr.net/npm/leaflet-ant-path@1.1.2/dist/leaflet-ant-path.min.js"></script>
 </head>
 
 <body>
 
-    <div class="folium-map" id="map_ae3f220e3f4f42a990884bc2e9105a46"></div>
-
+<div class="folium-map" id="map_ae3f220e3f4f42a990884bc2e9105a46"></div>
+<div id="mmsiform">
+    <form action="." method="post" class="form-row">
+        {% csrf_token %}
+        <div class="container">
+            <!--            <div class="ui-widget">-->
+            <div class="row">
+                <div class="col-5">
+                    <input type="text" class="form-control"
+                           name="mmsi"
+                           id="mmsi"
+                           placeholder="mmsi">
+                </div>
+                <div class="col text-center">
+                    <input type="submit" value="Search" class="btn btn-success btn-block">
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
 </body>
 <script>
     var map_ae3f220e3f4f42a990884bc2e9105a46 = L.map(
@@ -83,9 +126,6 @@
             noWrap: false,
         }
     );
-
-
-
 
 
     var tile_layer_64fe5b17b23e4713b0bd0b0a602dd121 = L.tileLayer(
@@ -129,7 +169,6 @@
     map_ae3f220e3f4f42a990884bc2e9105a46.on('draw:created', function (e) {
         drawnItems.addLayer(e.layer);
     });
-
 
 
     L.control.fullscreen({
@@ -182,11 +221,13 @@
     mouse_position_25b0a3b80e8e454f8960d638819af99f.options["latFormatter"] =
         function (num) {
             return L.Util.formatNum(num, 3) + ' º ';
-        };;
+        };
+    ;
     mouse_position_25b0a3b80e8e454f8960d638819af99f.options["lngFormatter"] =
         function (num) {
             return L.Util.formatNum(num, 3) + ' º ';
-        };;
+        };
+    ;
     map_ae3f220e3f4f42a990884bc2e9105a46.addControl(mouse_position_25b0a3b80e8e454f8960d638819af99f);
 
 
@@ -222,7 +263,7 @@
         "iconAnchor": [25, 50],
         "iconSize": [50, 50],
         "iconUrl": "https://i.imgur.com/mv665Ae.png",
-        "popupAnchor": [25, 25]
+        "popupAnchor": [0, 0]
     });
     marker_c859ba1288d44cc88bc605601085a48f.setIcon(custom_icon_cedd1fd180fa4b09a798dcfca0e910bd);
 
@@ -231,16 +272,49 @@
         "maxWidth": 500
     });
 
+    popup_f16c603b3fd2483fa9ea96cef62d697a.setContent("<body><table border=\"0.3\" width=\"100%\">\n" +
+        "        <tbody><tr align=\"center\">\n" +
+        "        <th>Status:</th>\n" +
+        "        <td>In Port</td>\n" +
+        "        <td><font color=\"green\">SINGAPORE</font></td>\n" +
+        "        </tr>\n" +
+        "        </tbody></table>\n" +
+        "            <hr>\n" +
+        "        <table border=\"0.3\" width=\"100%\">\n" +
+        "        <tbody><tr align=\"center\">\n" +
+        "        <td>Destination</td>\n" +
+        "        <td>MMSI</td>\n" +
+        "        <td>IMO</td>\n" +
+        "        <td>CALLSIGN</td>\n" +
+        "        </tr>\n" +
+        "        <tr align=\"center\">\n" +
+        "        <td> <font color=\"blue\">SGSIN PEBGA</font></td>\n" +
+        "        <td>431772000</td>\n" +
+        "        <td>9741449</td>\n" +
+        "        <td>7KBK</td>\n" +
+        "        </tr>\n" +
+        "        </tbody></table>\n" +
+        "            <hr>\n" +
+        "        <table border=\"0.3\" width=\"100%\">\n" +
+        "        <tbody><tr align=\"center\">\n" +
+        "        <td>Type</td>\n" +
+        "        <td>Status</td>\n" +
+        "        <td>Speed</td>\n" +
+        "        </tr>\n" +
+        "        <tr align=\"center\">\n" +
+        "        <td>Container Ship</td>\n" +
+        "        <td>moored</td>\n" +
+        "        <td>0.0 knots</td>\n" +
+        "        </tr>\n" +
+        "        </tbody></table>\n" +
+        "            <hr>\n" +
+        "        <p> <font color=\"gray\"> Last port time: 2020-11-19 04:31:00  PIRAEUS</font></p>\n" +
+        "        <p> <font color=\"gray\"> Position updated 0 hours 1 minuts 57 seconds ago </font></p>\n" +
+        "        </body>");
 
-    var i_frame_c1efebfcbf4149019da3a8c4708aedfa = $(
-        `<iframe src="data:text/html;charset=utf-8;base64,CiAgICAKCiAgICAgICAgPHRhYmxlIGJvcmRlcj0iMC4zIiB3aWR0aCA9ICIxMDAlIj4KICAgICAgICA8dHIgYWxpZ24gPSAiY2VudGVyIj4KICAgICAgICA8dGg+U3RhdHVzOjwvdGg+CiAgICAgICAgPHRkPkluIFBvcnQ8L3RkPgogICAgICAgIDx0ZD48Zm9udCBjb2xvcj0iZ3JlZW4iPlNJTkdBUE9SRTwvZm9udD48L3RkPgogICAgICAgIDwvdHI+CiAgICAgICAgPC90YWJsZT4KICAgICAgICAgICAgPGhyPgogICAgICAgIDx0YWJsZSBib3JkZXI9IjAuMyIgd2lkdGggPSAiMTAwJSI+CiAgICAgICAgPHRyIGFsaWduID0gImNlbnRlciI+CiAgICAgICAgPHRkPkRlc3RpbmF0aW9uPC90ZD4KICAgICAgICA8dGQ+TU1TSTwvdGQ+CiAgICAgICAgPHRkPklNTzwvdGQ+CiAgICAgICAgPHRkPkNBTExTSUdOPC90ZD4KICAgICAgICA8L3RyPgogICAgICAgIDx0ciBhbGlnbiA9ICJjZW50ZXIiPgogICAgICAgIDx0ZD4gPGZvbnQgY29sb3I9ImJsdWUiPlNHU0lOIFBFQkdBPC90ZD4KICAgICAgICA8dGQ+NDMxNzcyMDAwPC90ZD4KICAgICAgICA8dGQ+OTc0MTQ0OTwvdGQ+CiAgICAgICAgPHRkPjdLQks8L3RkPgogICAgICAgIDwvdHI+CiAgICAgICAgPC90YWJsZT4KICAgICAgICAgICAgPGhyPgogICAgICAgIDx0YWJsZSBib3JkZXI9IjAuMyIgd2lkdGggPSAiMTAwJSI+CiAgICAgICAgPHRyIGFsaWduID0gImNlbnRlciI+CiAgICAgICAgPHRkPlR5cGU8L3RkPgogICAgICAgIDx0ZD5TdGF0dXM8L3RkPgogICAgICAgIDx0ZD5TcGVlZDwvdGQ+CiAgICAgICAgPC90cj4KICAgICAgICA8dHIgYWxpZ24gPSAiY2VudGVyIj4KICAgICAgICA8dGQ+Q29udGFpbmVyIFNoaXA8L3RkPgogICAgICAgIDx0ZD5tb29yZWQ8L3RkPgogICAgICAgIDx0ZD4wLjAga25vdHM8L3RkPgogICAgICAgIDwvdHI+CiAgICAgICAgPC90YWJsZT4KICAgICAgICAgICAgPGhyPgogICAgICAgIDxwPiA8Zm9udCBjb2xvcj0iZ3JheSI+IExhc3QgcG9ydCB0aW1lOiAyMDIwLTA1LTI5IDA0OjMxOjAwICBQSVJBRVVTPC9mb250PjwvcD4KICAgICAgICA8cD4gPGZvbnQgY29sb3I9ImdyYXkiPiBQb3NpdGlvbiB1cGRhdGVkIDAgaG91cnMgNCBtaW51dHMgNTcgc2Vjb25kcyBhZ28gPC9mb250PjwvcD4KICAgICAgICA=" width="500" style="border:none !important;" height="280"></iframe>`
-    )[0];
-    popup_f16c603b3fd2483fa9ea96cef62d697a.setContent(i_frame_c1efebfcbf4149019da3a8c4708aedfa);
 
 
     marker_c859ba1288d44cc88bc605601085a48f.bindPopup(popup_f16c603b3fd2483fa9ea96cef62d697a);
-
-
 
 
     marker_c859ba1288d44cc88bc605601085a48f.bindTooltip(
@@ -304,3 +378,4 @@
         }
     ).addTo(map_ae3f220e3f4f42a990884bc2e9105a46);
 </script>
+</html>
