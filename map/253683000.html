@@ -29,6 +29,10 @@
             margin: 0;
             padding: 0;
         }
+        .leaflet-popup-content{
+            font-size: larger;
+            width: auto;
+        }
     </style>
     <style>
         #map {
@@ -253,13 +257,55 @@
     var popup_e2eb0f2509a84ebe9ee6d82a655188fc = L.popup({
         "maxWidth": 500
     });
-
-
-    var i_frame_a97614e43a7d4a21ae161ca8c9d51907 = $(
-        `<iframe src="data:text/html;charset=utf-8;base64,CiAgICAKICAgICAgICA8dGFibGUgd2lkdGggPSAiMTAwJSI+CiAgICAgICAgPHRyIGFsaWduID0gImNlbnRlciI+CiAgICAgICAgPHRoPkVUQTo8L3RoPgogICAgICAgIDx0ZD4yMDIwLTA2LTI5IDIxOjE5OjAwPC90ZD4KICAgICAgICA8dGg+TGVmdDo8L3RoPgogICAgICAgIDx0ZD40IGRheXMsIDk6NTc8L3RkPgogICAgICAgIDwvdHI+CiAgICAgICAgPC90YWJsZT4KICAgICAgICAgICAgPGhyPgogICAgICAgIDx0YWJsZSB3aWR0aCA9ICIxMDAlIj4KICAgICAgICA8dHIgYWxpZ24gPSAiY2VudGVyIj4KICAgICAgICA8dGQ+RGVzdGluYXRpb248L3RkPgogICAgICAgIDx0ZD5NTVNJPC90ZD4KICAgICAgICA8dGQ+SU1PPC90ZD4KICAgICAgICA8dGQ+Q0FMTFNJR048L3RkPgogICAgICAgIDwvdHI+CiAgICAgICAgPHRyIGFsaWduID0gImNlbnRlciI+CiAgICAgICAgPHRkPiA8Zm9udCBjb2xvcj0iYmx1ZSI+SVQgTU5GPC90ZD4KICAgICAgICA8dGQ+MjUzNjgzMDAwPC90ZD4KICAgICAgICA8dGQ+OTQ1MTU3NTwvdGQ+CiAgICAgICAgPHRkPkxYU0w8L3RkPgogICAgICAgIDwvdHI+CiAgICAgICAgPC90YWJsZT4KICAgICAgICAgICAgPGhyPgogICAgICAgIDx0YWJsZSAgd2lkdGggPSAiMTAwJSI+CiAgICAgICAgPHRyIGFsaWduID0gImNlbnRlciI+CiAgICAgICAgPHRkPjxmb250IGNvbG9yPSJncmVlbiI+IE1BUklVUE9MPC90ZD4KICAgICAgICA8dGQ+PHByb2dyZXNzIHZhbHVlPTY3Ljg0NTEzMTMzNjU3MDIzIG1heD0xMDA+PC9wcm9ncmVzcz48L3RkPgogICAgICAgIDx0ZD4gPGZvbnQgY29sb3I9InJlZCI+IE1PTkZBTENPTkU8L3RkPgogICAgICAgIDwvdHI+CiAgICAgICAgPC90YWJsZT4KICAgICAgICAgICAgPGhyPgoKICAgICAgICA8dGFibGUgd2lkdGggPSAiMTAwJSI+CiAgICAgICAgPHRyIGFsaWduID0gImNlbnRlciI+CiAgICAgICAgPHRkPlR5cGU8L3RkPgogICAgICAgIDx0ZD5TdGF0dXM8L3RkPgogICAgICAgIDx0ZD5TcGVlZDwvdGQ+CiAgICAgICAgPC90cj4KICAgICAgICA8dHIgYWxpZ24gPSAiY2VudGVyIj4KICAgICAgICA8dGQ+QnVsayBDYXJyaWVyPC90ZD4KICAgICAgICA8dGQ+dW5kZXIgd2F5IHVzaW5nIGVuZ2luZTwvdGQ+CiAgICAgICAgPHRkPjguMCBrbm90czwvdGQ+CiAgICAgICAgPC90cj4KICAgICAgICA8L3RhYmxlPgogICAgICAgICAgICA8aHI+CiAgICAgICAgPHA+IDxmb250IGNvbG9yPSJncmF5Ij4gTGFzdCBwb3J0IHRpbWU6IDIwMjAtMDYtMTYgMDM6NDc6MDAgPC9mb250PjwvcD4KICAgICAgICA8cD4gPGZvbnQgY29sb3I9ImdyYXkiPiBQb3NpdGlvbiB1cGRhdGVkIDAgaG91cnMgMSBtaW51dHMgNTEgc2Vjb25kcyBhZ28gPC9mb250PjwvcD4KICAgICAgICA=" width="500" style="border:none !important;" height="330"></iframe>`
-    )[0];
-    popup_e2eb0f2509a84ebe9ee6d82a655188fc.setContent(i_frame_a97614e43a7d4a21ae161ca8c9d51907);
-
+    popup_e2eb0f2509a84ebe9ee6d82a655188fc.setContent("<body><table width=\"100%\">\n" +
+        "        <tbody><tr align=\"center\">\n" +
+        "        <th>ETA:</th>\n" +
+        "        <td>2020-12-04 21:19:00</td>\n" +
+        "        <th>Left:</th>\n" +
+        "        <td>7 days, 11:57</td>\n" +
+        "        </tr>\n" +
+        "        </tbody></table>\n" +
+        "            <hr>\n" +
+        "        <table width=\"100%\">\n" +
+        "        <tbody><tr align=\"center\">\n" +
+        "        <td>Destination</td>\n" +
+        "        <td>MMSI</td>\n" +
+        "        <td>IMO</td>\n" +
+        "        <td>CALLSIGN</td>\n" +
+        "        </tr>\n" +
+        "        <tr align=\"center\">\n" +
+        "        <td> <font color=\"blue\">IT MNF</font></td>\n" +
+        "        <td>253683000</td>\n" +
+        "        <td>9451575</td>\n" +
+        "        <td>LXSL</td>\n" +
+        "        </tr>\n" +
+        "        </tbody></table>\n" +
+        "            <hr>\n" +
+        "        <table width=\"100%\">\n" +
+        "        <tbody><tr align=\"center\">\n" +
+        "        <td><font color=\"green\"> MARIUPOL</font></td>\n" +
+        "        <td><progress value=\"43.84513133657023\" max=\"100\"></progress></td>\n" +
+        "        <td> <font color=\"red\"> MONFALCONE</font></td>\n" +
+        "        </tr>\n" +
+        "        </tbody></table>\n" +
+        "            <hr>\n" +
+        "\n" +
+        "        <table width=\"100%\">\n" +
+        "        <tbody><tr align=\"center\">\n" +
+        "        <td>Type</td>\n" +
+        "        <td>Status</td>\n" +
+        "        <td>Speed</td>\n" +
+        "        </tr>\n" +
+        "        <tr align=\"center\">\n" +
+        "        <td>Bulk Carrier</td>\n" +
+        "        <td>under way using engine</td>\n" +
+        "        <td>8.0 knots</td>\n" +
+        "        </tr>\n" +
+        "        </tbody></table>\n" +
+        "            <hr>\n" +
+        "        <p> <font color=\"gray\"> Last port time: 2020-10-26 03:47:00  MARIUPOL</font></p>\n" +
+        "        <p> <font color=\"gray\"> Position updated 0 hours 1 minuts 51 seconds ago </font></p>\n" +
+        "        </body>");
 
     marker_d921186dc9a447f097dc16378f38de36.bindPopup(popup_e2eb0f2509a84ebe9ee6d82a655188fc);
 
