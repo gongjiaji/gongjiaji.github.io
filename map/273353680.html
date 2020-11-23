@@ -29,6 +29,10 @@
             margin: 0;
             padding: 0;
         }
+        .leaflet-popup-content{
+            font-size: larger;
+            width: 450px;
+        }
     </style>
     <style>
         #map {
@@ -245,7 +249,7 @@
         "iconAnchor": [25, 50],
         "iconSize": [50, 50],
         "iconUrl": "https://i.imgur.com/mv665Ae.png",
-        "popupAnchor": [25, 25]
+        "popupAnchor": [0, 0]
     });
     marker_d6b5a24e959941e7a27c9ae71ceb9fb4.setIcon(custom_icon_32faea33827142ab993e34197239d1c4);
 
@@ -253,14 +257,60 @@
     var popup_2935b99cd12e4342b2baac04b516d4e0 = L.popup({
         "maxWidth": 500
     });
+ var popup_2935b99cd12e4342b2baac04b516d4e0 = L.popup({
+        "maxWidth": 500
+    });
 
 
-    var i_frame_fa92ecd7ad004490adf4e65816a86b4b = $(
-        `<iframe src="data:text/html;charset=utf-8;base64,CiAgICAKICAgICAgICA8dGFibGUgYm9yZGVyPSIwLjMiIHdpZHRoID0gIjEwMCUiPgogICAgICAgIDx0ciBhbGlnbiA9ICJjZW50ZXIiPgogICAgICAgIDx0aD5FVEE6PC90aD4KICAgICAgICA8dGQ+MjAyMC0wNi0yMCAwNjowMDowMDwvdGQ+CiAgICAgICAgPHRoPkxlZnQ6PC90aD4KICAgICAgICA8dGQ+MTY6MzI8L3RkPgogICAgICAgIDwvdHI+CiAgICAgICAgPC90YWJsZT4KICAgICAgICAgICAgPGhyPgogICAgICAgIDx0YWJsZSBib3JkZXI9IjAuMyIgd2lkdGggPSAiMTAwJSI+CiAgICAgICAgPHRyIGFsaWduID0gImNlbnRlciI+CiAgICAgICAgPHRkPkRlc3RpbmF0aW9uPC90ZD4KICAgICAgICA8dGQ+TU1TSTwvdGQ+CiAgICAgICAgPHRkPklNTzwvdGQ+CiAgICAgICAgPHRkPkNBTExTSUdOPC90ZD4KICAgICAgICA8L3RyPgogICAgICAgIDx0ciBhbGlnbiA9ICJjZW50ZXIiPgogICAgICAgIDx0ZD4gPGZvbnQgY29sb3I9ImJsdWUiPktPTERJTkc8L3RkPgogICAgICAgIDx0ZD4yNzMzNTM2ODA8L3RkPgogICAgICAgIDx0ZD45NTU1MzU3PC90ZD4KICAgICAgICA8dGQ+VUVKTzwvdGQ+CiAgICAgICAgPC90cj4KICAgICAgICA8L3RhYmxlPgogICAgICAgICAgICA8aHI+CiAgICAgICAgPHRhYmxlIGJvcmRlcj0iMCIgd2lkdGggPSAiMTAwJSI+CiAgICAgICAgPHRyIGFsaWduID0gImNlbnRlciI+CiAgICAgICAgPHRkPjxmb250IGNvbG9yPSJncmVlbiI+IFZZQk9SRzwvdGQ+CiAgICAgICAgPHRkPjxwcm9ncmVzcyB2YWx1ZT00Ni44NzMyNzA2MTQyNzc4MSBtYXg9MTAwPjwvcHJvZ3Jlc3M+PC90ZD4KICAgICAgICA8dGQ+IDxmb250IGNvbG9yPSJyZWQiPiBLT0xESU5HPC90ZD4KICAgICAgICA8L3RyPgogICAgICAgIDwvdGFibGU+CiAgICAgICAgICAgIDxocj4KCiAgICAgICAgPHRhYmxlIGJvcmRlcj0iMC4zIiB3aWR0aCA9ICIxMDAlIj4KICAgICAgICA8dHIgYWxpZ24gPSAiY2VudGVyIj4KICAgICAgICA8dGQ+VHlwZTwvdGQ+CiAgICAgICAgPHRkPlN0YXR1czwvdGQ+CiAgICAgICAgPHRkPlNwZWVkPC90ZD4KICAgICAgICA8L3RyPgogICAgICAgIDx0ciBhbGlnbiA9ICJjZW50ZXIiPgogICAgICAgIDx0ZD5HZW5lcmFsIENhcmdvPC90ZD4KICAgICAgICA8dGQ+dW5kZXIgd2F5IHVzaW5nIGVuZ2luZTwvdGQ+CiAgICAgICAgPHRkPjkuNiBrbm90czwvdGQ+CiAgICAgICAgPC90cj4KICAgICAgICA8L3RhYmxlPgogICAgICAgICAgICA8aHI+CiAgICAgICAgPHA+IDxmb250IGNvbG9yPSJncmF5Ij4gTGFzdCBwb3J0IHRpbWU6IDIwMjAtMDYtMTYgMTE6Mzk6MDAgPC9mb250PjwvcD4KICAgICAgICA8cD4gPGZvbnQgY29sb3I9ImdyYXkiPiBQb3NpdGlvbiB1cGRhdGVkIDAgaG91cnMgMzIgbWludXRzIDQ1IHNlY29uZHMgYWdvIDwvZm9udD48L3A+CiAgICAgICAg" width="500" style="border:none !important;" height="330"></iframe>`
-    )[0];
-    popup_2935b99cd12e4342b2baac04b516d4e0.setContent(i_frame_fa92ecd7ad004490adf4e65816a86b4b);
-
-
+    popup_2935b99cd12e4342b2baac04b516d4e0.setContent("<body><table border=\"0.3\" width=\"100%\">\n" +
+        "        <tbody><tr align=\"center\">\n" +
+        "        <th>ETA:</th>\n" +
+        "        <td>2020-12-01 06:00:00</td>\n" +
+        "        <th>Left:</th>\n" +
+        "        <td>3days,16:32</td>\n" +
+        "        </tr>\n" +
+        "        </tbody></table>\n" +
+        "            <hr>\n" +
+        "        <table border=\"0.3\" width=\"100%\">\n" +
+        "        <tbody><tr align=\"center\">\n" +
+        "        <td>Destination</td>\n" +
+        "        <td>MMSI</td>\n" +
+        "        <td>IMO</td>\n" +
+        "        <td>CALLSIGN</td>\n" +
+        "        </tr>\n" +
+        "        <tr align=\"center\">\n" +
+        "        <td> <font color=\"blue\">KOLDING</font></td>\n" +
+        "        <td>273353680</td>\n" +
+        "        <td>9555357</td>\n" +
+        "        <td>UEJO</td>\n" +
+        "        </tr>\n" +
+        "        </tbody></table>\n" +
+        "            <hr>\n" +
+        "        <table border=\"0\" width=\"100%\">\n" +
+        "        <tbody><tr align=\"center\">\n" +
+        "        <td><font color=\"green\"> VYBORG</font></td>\n" +
+        "        <td><progress value=\"80.87327061427781\" max=\"100\"></progress></td>\n" +
+        "        <td> <font color=\"red\"> KOLDING</font></td>\n" +
+        "        </tr>\n" +
+        "        </tbody></table>\n" +
+        "            <hr>\n" +
+        "\n" +
+        "        <table border=\"0.3\" width=\"100%\">\n" +
+        "        <tbody><tr align=\"center\">\n" +
+        "        <td>Type</td>\n" +
+        "        <td>Status</td>\n" +
+        "        <td>Speed</td>\n" +
+        "        </tr>\n" +
+        "        <tr align=\"center\">\n" +
+        "        <td>General Cargo</td>\n" +
+        "        <td>under way using engine</td>\n" +
+        "        <td>9.6 knots</td>\n" +
+        "        </tr>\n" +
+        "        </tbody></table>\n" +
+        "            <hr>\n" +
+        "        <p> <font color=\"gray\"> Last port time: 2020-10-30 11:39:00 </font></p>\n" +
+        "        <p> <font color=\"gray\"> Position updated 2 minuts 45 seconds ago </font></p>\n" +
+        "        </body>");
     marker_d6b5a24e959941e7a27c9ae71ceb9fb4.bindPopup(popup_2935b99cd12e4342b2baac04b516d4e0);
 
 
