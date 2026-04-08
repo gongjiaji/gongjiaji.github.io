@@ -1,188 +1,207 @@
-<!DOCTYPE html>
-<html>
-<head><meta name="generator" content="Hexo 3.9.0">
-  <meta charset="utf-8">
-  
+# Logging and Exception Handling Design
 
-  
-  <title>Gong Jiaji personal website</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Gong Jiaji personal website">
-<meta property="og:url" content="http://gongjiaji.github.io/index.html">
-<meta property="og:site_name" content="Gong Jiaji personal website">
-<meta property="og:locale" content="en">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Gong Jiaji personal website">
-  
-    <link rel="alternate" href="/atom.xml" title="Gong Jiaji personal website" type="application/atom+xml">
-  
-  
-    <link rel="icon" href="/favicon.png">
-  
-  
-    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
-  
-  <link rel="stylesheet" href="/css/style.css">
-</head>
-</html>
-<body>
-  <div id="container">
-    <div id="wrap">
-      <header id="header">
-  <div id="banner"></div>
-  <div id="header-outer" class="outer">
-    <div id="header-title" class="inner">
-      <h1 id="logo-wrap">
-        <a href="/" id="logo">Gong Jiaji personal website</a>
-      </h1>
-      
-    </div>
-    <div id="header-inner" class="inner">
-      <nav id="main-nav">
-        <a id="main-nav-toggle" class="nav-icon"></a>
-        
-          <a class="main-nav-link" href="/">Home</a>
-        
-          <a class="main-nav-link" href="/archives">Archives</a>
-        
-      </nav>
-      <nav id="sub-nav">
-        
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
-        
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
-      </nav>
-      <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://gongjiaji.github.io"></form>
-      </div>
-    </div>
-  </div>
-</header>
-      <div class="outer">
-        <section id="main">
-  
-    <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/hello-world/" class="article-date">
-  <time datetime="2019-08-14T13:41:48.565Z" itemprop="datePublished">2019-08-14</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/hello-world/">Hello World</a>
-    </h1>
-  
+## 1. Overview
 
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
+This document defines a structured, local-first logging system with unified exception handling.
 
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+Goals:
 
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+- Enable fast debugging with clear error summaries and traceback
+- Ensure reliability with local file logging first
+- Support machine and AI analysis through structured logs
+- Minimize logging burden in business code
 
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+---
 
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
+## 2. Design Principles
 
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://gongjiaji.github.io/hello-world/" data-id="cjzbfxesl0000v8h9e2oum7jx" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
+- MUST use structured logs in JSONL format
+- MUST write logs to local files first
+- MUST NOT depend on external systems such as ELK at runtime
+- MUST centralize logging at framework boundaries
+- MUST NOT scatter logging across business logic
+- MUST make logs traceable through correlation IDs
 
+---
 
-  
+## 3. Log Format
 
+- Format: JSONL (one JSON object per line)
+- No multiline logs
+- Traceback MUST be stored as a string field
+- Schema MUST remain consistent
 
-</section>
-        
-          <aside id="sidebar">
-  
-    
+---
 
-  
-    
+## 4. Log Streams
 
-  
-    
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li></ul>
-    </div>
-  </div>
+There are 5 log types:
 
+- `api_access`
+- `api_error`
+- `job_run`
+- `job_error`
+- `service`
 
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
-    <div class="widget">
-      <ul>
-        
-          <li>
-            <a href="/hello-world/">Hello World</a>
-          </li>
-        
-      </ul>
-    </div>
-  </div>
+Each writes to its own file:
 
-  
-</aside>
-        
-      </div>
-      <footer id="footer">
-  
-  <div class="outer">
-    <div id="footer-info" class="inner">
-      &copy; 2019 Gong Jiaji<br>
-      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
-    </div>
-  </div>
-</footer>
-    </div>
-    <nav id="mobile-nav">
-  
-    <a href="/" class="mobile-nav-link">Home</a>
-  
-    <a href="/archives" class="mobile-nav-link">Archives</a>
-  
-</nav>
-    
+    api_access.jsonl
+    api_error.jsonl
+    job_run.jsonl
+    job_error.jsonl
+    service.jsonl
 
-<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+---
 
+## 5. Correlation IDs
 
-  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
-  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+### request_id (API)
 
+- MUST exist for every API request
+- MUST reuse `X-Request-ID` header if provided
+- MUST generate a new one if not provided
+- MUST be included in:
+  - api_access
+  - api_error
+  - response header
 
-<script src="/js/script.js"></script>
+### run_id (Job)
 
+- MUST exist for every job execution
+- MUST be unique per execution
+- For current single-node deployment, use job start timestamp with second precision
 
+Example:
 
-  </div>
-</body>
-</html>
+    20260408-030501
+
+Assumptions:
+
+- Single-node deployment
+- No same-second duplicate runs
+
+---
+
+## 6. API Logging
+
+### Middleware
+
+Middleware MUST:
+
+- Generate or extract request_id
+- Record api_access
+- Measure latency
+- Attach X-Request-ID to response
+
+### Global Exception Handler
+
+Global exception handling MUST:
+
+- Catch all uncaught exceptions
+- Record api_error
+- Return a unified error response
+- MUST NOT expose traceback to client
+- MUST include traceback in logs
+
+---
+
+## 7. Job Logging
+
+All jobs MUST run through a wrapper.
+
+Execution flow:
+
+    start -> run -> success / error
+
+The wrapper MUST:
+
+- Generate run_id
+- Record job_run
+- Record job_error on failure
+- Measure execution duration
+
+---
+
+## 8. Service Logging
+
+service logging is used for:
+
+- Application startup and shutdown
+- Database or Redis status
+- Internal system events
+
+Notes:
+
+- No request_id required
+- No run_id required
+- Used for system-level observability
+
+---
+
+## 9. Error Log Design
+
+Each error log MUST include:
+
+- component (module name)
+- stage (execution step)
+- error_type
+- error_summary (short, human-readable)
+- exception (full traceback string)
+
+Principles:
+
+- Summary is for quick understanding
+- Traceback is for deep debugging
+
+---
+
+## 10. Log Rotation
+
+Since system logrotate may not be available:
+
+- MUST use application-level rotation
+- Use time-based rotation (daily)
+- MUST retain limited history (for example 30 days)
+- MUST automatically delete old logs
+
+---
+
+## 11. Security
+
+Logs MUST NOT contain:
+
+- passwords
+- tokens
+- authorization headers
+- sensitive personal data
+- large request bodies
+
+---
+
+## 12. Architecture Rules
+
+- MUST NOT rely on business code for logging structure
+- MUST NOT scatter try/except plus logging across the codebase
+
+Instead:
+
+- API logging must be handled by:
+  - middleware
+  - global exception handler
+
+- Job logging must be handled by:
+  - wrapper
+
+Business code should only add contextual fields when needed.
+
+---
+
+## 13. Summary
+
+This system provides:
+
+- Structured JSONL logs
+- Separation by API / Job / Service
+- Traceability via request_id / run_id
+- Centralized logging architecture
+- Local-first logging with built-in rotation
