@@ -1,207 +1,303 @@
 # Logging and Exception Handling Design
 
-## 1. Overview
+## 1. Objective
 
-This document defines a structured, local-first logging system with unified exception handling.
+Implement a simple, reliable logging and exception handling system for a FastAPI service.
 
-Goals:
+Requirements:
 
-- Enable fast debugging with clear error summaries and traceback
-- Ensure reliability with local file logging first
-- Support machine and AI analysis through structured logs
-- Minimize logging burden in business code
-
----
-
-## 2. Design Principles
-
-- MUST use structured logs in JSONL format
-- MUST write logs to local files first
-- MUST NOT depend on external systems such as ELK at runtime
-- MUST centralize logging at framework boundaries
-- MUST NOT scatter logging across business logic
-- MUST make logs traceable through correlation IDs
+- Keep implementation simple (v1)
+- Logs must be easy for humans to read
+- Logs must support debugging quickly
+- Avoid scattered logging logic in business code
+- Centralize logging at framework level
 
 ---
 
-## 3. Log Format
+## 2. Log Files
 
-- Format: JSONL (one JSON object per line)
-- No multiline logs
-- Traceback MUST be stored as a string field
-- Schema MUST remain consistent
+There are only 3 log files:
 
----
+- api.log
+- job.log
+- service.log
 
-## 4. Log Streams
-
-There are 5 log types:
-
-- `api_access`
-- `api_error`
-- `job_run`
-- `job_error`
-- `service`
-
-Each writes to its own file:
-
-    api_access.jsonl
-    api_error.jsonl
-    job_run.jsonl
-    job_error.jsonl
-    service.jsonl
+All logs are plain text (NOT JSON).
 
 ---
 
-## 5. Correlation IDs
+## 3. Log Levels
 
-### request_id (API)
+- INFO → normal events (short, concise)
+- ERROR → failures (must include traceback)
 
-- MUST exist for every API request
-- MUST reuse `X-Request-ID` header if provided
-- MUST generate a new one if not provided
-- MUST be included in:
-  - api_access
-  - api_error
-  - response header
+---
 
-### run_id (Job)
+## 4. API Logging
 
-- MUST exist for every job execution
-- MUST be unique per execution
-- For current single-node deployment, use job start timestamp with second precision
+### 4.1 Middleware Responsibilities
+
+Implement a FastAPI middleware that:
+
+- Generates a `request_id` for every request
+- Stores it in `request.state.request_id`
+- Measures request latency
+- Writes access log to `api.log`
+
+Format:
+
+    [request_id] METHOD PATH STATUS LATENCY_MS
+
+Example:
+
+    [abc123] GET /api/review 200 45ms
+
+---
+
+### 4.2 Global Exception Handler
+
+Implement global exception handling:
+
+#### For Exception (critical)
+
+Must:
+
+- Catch ALL unhandled exceptions
+- Log as ERROR
+- Include:
+  - request_id
+  - method
+  - path
+  - error summary
+  - full traceback
+
+Format:
+
+    [request_id] METHOD PATH error_summary
+    Traceback ...
+
+Example:
+
+    [abc123] GET /api/review db timeout
+    Traceback (most recent call last):
+    ...
+
+Response:
+
+    {
+      "message": "Internal server error",
+      "request_id": "abc123"
+    }
+
+---
+
+#### For HTTPException (expected errors)
+
+Log as WARNING or INFO.
+
+Example:
+
+    [abc123] GET /api/user 404 User not found
+
+---
+
+### 4.3 request_id Rules
+
+- MUST generate for every request
+- MUST be included in ALL api logs
+- No need to require frontend to send it
+- SHOULD attach to response header (`X-Request-ID`)
+
+---
+
+## 5. Business Code Rules (API)
+
+### DO NOT:
+
+- Add try/except everywhere
+- Log errors manually in every function
+
+### DO:
+
+Only use try/except when:
+
+- Converting to business error (HTTPException)
+- Fallback logic (graceful degradation)
+- Adding useful business context
+
+Example:
+
+    try:
+        call_external_api()
+    except TimeoutError:
+        raise HTTPException(502, "Upstream timeout")
+
+---
+
+## 6. Job Logging
+
+Use APScheduler for scheduling.
+
+Implement a **job logging wrapper/helper**.
+
+---
+
+### 6.1 run_id
+
+Each job execution MUST have a run_id.
+
+Format:
+
+    YYYYMMDD-HHMMSS
 
 Example:
 
     20260408-030501
 
-Assumptions:
+---
 
-- Single-node deployment
-- No same-second duplicate runs
+### 6.2 Required Logging (Framework Level)
+
+Every job MUST log:
+
+#### Start
+
+    [job_name][run_id] started
+
+#### Success
+
+    [job_name][run_id] success duration=12.4s
+
+#### Failure
+
+    [job_name][run_id] failed
+    Traceback ...
 
 ---
 
-## 6. API Logging
+### 6.3 Optional Business Logs (Per Job)
 
-### Middleware
+Each job MAY log additional details depending on its logic.
 
-Middleware MUST:
+Examples:
 
-- Generate or extract request_id
-- Record api_access
-- Measure latency
-- Attach X-Request-ID to response
+    [sync_rules][20260408-030501] fetched 1200 rules
+    [sync_rules][20260408-030501] processed 1190 success, 10 failed
 
-### Global Exception Handler
+Another example:
 
-Global exception handling MUST:
-
-- Catch all uncaught exceptions
-- Record api_error
-- Return a unified error response
-- MUST NOT expose traceback to client
-- MUST include traceback in logs
+    [daily_report][20260408-060000] generated report file report_20260408.csv
 
 ---
 
-## 7. Job Logging
-
-All jobs MUST run through a wrapper.
-
-Execution flow:
-
-    start -> run -> success / error
+### 6.4 Wrapper Behavior
 
 The wrapper MUST:
 
 - Generate run_id
-- Record job_run
-- Record job_error on failure
-- Measure execution duration
+- Log start
+- Execute job
+- Measure duration
+- Log success OR failure
+- Log traceback on failure
 
 ---
 
-## 8. Service Logging
+## 7. Service Logging
 
-service logging is used for:
+`service.log` is ONLY for service lifecycle.
 
-- Application startup and shutdown
-- Database or Redis status
-- Internal system events
+Must log:
 
-Notes:
+    service starting
+    service started
+    service startup failed
+    service shutting down
+    service stopped
 
-- No request_id required
-- No run_id required
-- Used for system-level observability
+If startup fails:
 
----
+- MUST log full traceback
 
-## 9. Error Log Design
+Example:
 
-Each error log MUST include:
-
-- component (module name)
-- stage (execution step)
-- error_type
-- error_summary (short, human-readable)
-- exception (full traceback string)
-
-Principles:
-
-- Summary is for quick understanding
-- Traceback is for deep debugging
+    service starting
+    service startup failed
+    Traceback ...
 
 ---
 
-## 10. Log Rotation
+## 8. Log Rotation
 
-Since system logrotate may not be available:
+Requirements:
 
-- MUST use application-level rotation
-- Use time-based rotation (daily)
-- MUST retain limited history (for example 30 days)
-- MUST automatically delete old logs
+- Rotate logs DAILY
+- Keep current file name unchanged:
+  - api.log
+  - job.log
+  - service.log
+- Archive old logs (e.g. api.log.2026-04-08)
+- Automatically delete old logs (housekeeping)
 
----
+Retention example:
 
-## 11. Security
-
-Logs MUST NOT contain:
-
-- passwords
-- tokens
-- authorization headers
-- sensitive personal data
-- large request bodies
+- Keep last 30 days
 
 ---
 
-## 12. Architecture Rules
+## 9. Implementation Notes
 
-- MUST NOT rely on business code for logging structure
-- MUST NOT scatter try/except plus logging across the codebase
-
-Instead:
-
-- API logging must be handled by:
-  - middleware
-  - global exception handler
-
-- Job logging must be handled by:
-  - wrapper
-
-Business code should only add contextual fields when needed.
+- Use Python `logging` module
+- Use separate loggers or handlers per file:
+  - api logger → api.log
+  - job logger → job.log
+  - service logger → service.log
+- Ensure thread-safe logging
+- Ensure no duplicate logs
 
 ---
 
-## 13. Summary
+## 10. Summary
 
 This system provides:
 
-- Structured JSONL logs
-- Separation by API / Job / Service
-- Traceability via request_id / run_id
-- Centralized logging architecture
-- Local-first logging with built-in rotation
+- 3 log files only (simple)
+- Human-readable logs
+- request_id for API tracing
+- run_id for job tracing
+- Centralized exception handling
+- Minimal business code pollution
+- Daily rotation with cleanup
+
+---
+
+## 11. Deliverables (IMPORTANT)
+
+Claude Code MUST implement:
+
+1. FastAPI middleware for:
+   - request_id
+   - access logging
+
+2. Global exception handlers:
+   - Exception
+   - HTTPException
+
+3. Logging setup:
+   - api.log
+   - job.log
+   - service.log
+
+4. Job logging wrapper:
+   - run_id
+   - start / success / failure
+
+5. Log rotation:
+   - daily rotation
+   - retention cleanup
+
+6. Example usage:
+   - 1 API endpoint
+   - 1 sample APScheduler job
+
+The implementation must be clean, minimal, and production-ready.
