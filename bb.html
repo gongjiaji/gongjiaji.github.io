@@ -1,7 +1,69 @@
-<html>
-    <body>
-        <a href="http://www.dade.sg/img/p/pdf/bb.apk">download blackboard apk file</a>
+Before coding, first read logging_design.md carefully and produce a short implementation plan based on the current project structure. Then implement it.
 
-    </body>
-</html>
+Please read logging_design.md and implement the logging and exception handling system exactly according to that document.
 
+Requirements for this task:
+	1.	Follow the design in logging_design.md strictly
+	2.	Keep the implementation simple and clean
+	3.	Do not over-engineer
+	4.	Do not introduce JSON logs
+	5.	Use plain text logs only
+	6.	Use 3 log files only:
+	•	api.log
+	•	job.log
+	•	service.log
+	7.	Implement the following components:
+
+	•	FastAPI middleware:
+	•	generate request_id
+	•	attach to request.state
+	•	log access (method, path, status, latency)
+	•	Global exception handlers:
+	•	handle Exception → log ERROR with traceback
+	•	handle HTTPException → log WARNING or INFO
+	•	Logging setup:
+	•	configure 3 separate loggers or handlers
+	•	api logger → api.log
+	•	job logger → job.log
+	•	service logger → service.log
+	•	Job logging helper / wrapper:
+	•	generate run_id (YYYYMMDD-HHMMSS)
+	•	log start / success / failure
+	•	measure duration
+	•	log traceback on failure
+	•	Log rotation:
+	•	daily rotation
+	•	keep current file name unchanged
+	•	archive old logs
+	•	implement retention cleanup (e.g. keep last 30 days)
+
+	8.	Add example usage:
+
+	•	One sample FastAPI endpoint
+	•	One sample APScheduler job using the job logging wrapper
+
+	9.	Keep business code clean:
+
+	•	Do NOT add try/except everywhere
+	•	Only use try/except when needed for business logic
+	•	Logging must be centralized (middleware + exception handler + wrapper)
+
+	10.	Service logging:
+
+	•	Log service starting
+	•	Log service started
+	•	Log service startup failure with traceback
+	•	Log shutdown events if applicable
+
+	11.	Integration requirement:
+
+	•	Inspect the existing project structure first
+	•	Integrate logging into the current project (do not build a separate demo project)
+	•	Keep changes minimal and clean
+
+After implementation, provide a summary:
+	•	What files were added or modified
+	•	How API logging flow works
+	•	How exception handling works
+	•	How to use the job logging helper
+	•	How log rotation and cleanup works
