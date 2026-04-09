@@ -1,69 +1,25 @@
-Before coding, first read logging_design.md carefully and produce a short implementation plan based on the current project structure. Then implement it.
+Overall this looks production-ready. The logging and exception handling design is now correct:
 
-Please read logging_design.md and implement the logging and exception handling system exactly according to that document.
+- Fatal errors are no longer swallowed
+- Exceptions are properly re-raised for @log_job
+- Exit code semantics are correct
+- update_change_type_and_ssh_markers() no longer silently hides failures
 
-Requirements for this task:
-	1.	Follow the design in logging_design.md strictly
-	2.	Keep the implementation simple and clean
-	3.	Do not over-engineer
-	4.	Do not introduce JSON logs
-	5.	Use plain text logs only
-	6.	Use 3 log files only:
-	•	api.log
-	•	job.log
-	•	service.log
-	7.	Implement the following components:
+Please make the following final improvements:
 
-	•	FastAPI middleware:
-	•	generate request_id
-	•	attach to request.state
-	•	log access (method, path, status, latency)
-	•	Global exception handlers:
-	•	handle Exception → log ERROR with traceback
-	•	handle HTTPException → log WARNING or INFO
-	•	Logging setup:
-	•	configure 3 separate loggers or handlers
-	•	api logger → api.log
-	•	job logger → job.log
-	•	service logger → service.log
-	•	Job logging helper / wrapper:
-	•	generate run_id (YYYYMMDD-HHMMSS)
-	•	log start / success / failure
-	•	measure duration
-	•	log traceback on failure
-	•	Log rotation:
-	•	daily rotation
-	•	keep current file name unchanged
-	•	archive old logs
-	•	implement retention cleanup (e.g. keep last 30 days)
+1. In collect_data(), change the error message:
+   "failed to fetch from iChamp" is misleading because the try/except covers fetch, parsing, filtering, and transformation.
+   Use a more accurate message like "collect_data failed".
 
-	8.	Add example usage:
+2. Add a success log in update_change_type_and_ssh_markers(), e.g.:
+   updated X records to SSH change_type
 
-	•	One sample FastAPI endpoint
-	•	One sample APScheduler job using the job logging wrapper
+3. Confirm whether update_change_type_and_ssh_markers() should be part of the main pipeline.
+   If yes, call it from collect_cr_data() and log the result.
 
-	9.	Keep business code clean:
+4. For important silent degradation paths (e.g. MD approver cache load failure, classify_tower fallback),
+   add at least warning-level or summary-level visibility.
 
-	•	Do NOT add try/except everywhere
-	•	Only use try/except when needed for business logic
-	•	Logging must be centralized (middleware + exception handler + wrapper)
+5. (Optional) Consider whether per-record checksum warnings may be too noisy at scale.
 
-	10.	Service logging:
-
-	•	Log service starting
-	•	Log service started
-	•	Log service startup failure with traceback
-	•	Log shutdown events if applicable
-
-	11.	Integration requirement:
-
-	•	Inspect the existing project structure first
-	•	Integrate logging into the current project (do not build a separate demo project)
-	•	Keep changes minimal and clean
-
-After implementation, provide a summary:
-	•	What files were added or modified
-	•	How API logging flow works
-	•	How exception handling works
-	•	How to use the job logging helper
-	•	How log rotation and cleanup works
+6. (Optional) Update collect_data() docstring to reflect that fatal errors are raised.
