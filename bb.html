@@ -1,17 +1,15 @@
-Please fix these points in ds_command_logs.py:
+I reviewed ds_command_logs.py again.
 
-1. In get_logs_graylog(), do not silently break on non-200 response.
-   Use response.raise_for_status(), or log error and re-raise.
+Main issue before PROD:
+1. store_data() currently checks duplicates row by row with one DB query per log. This will become a bottleneck in PROD for large batches. We should avoid N queries here. Either:
+- remove exact duplicate/new_insert counting and just bulk upsert + log total/unique_crs, or
+- batch-load existing composite keys and compare in memory.
 
-2. Do not silently skip records in get_logs_local() / get_logs_graylog().
-   Please add skip counters and log one summary line at the end, instead of many per-record warnings.
+2. Please confirm all datetime values are normalized to the same format/type before _assign_sequence_numbers(). If some are timezone-aware and some are naive, sorting can fail in PROD.
 
-3. If max_iterations is reached, log a warning because results may be incomplete.
+Non-blocking improvements:
+3. _create_log_entry() should return Dict[str, Any] | None, since it can return None.
+4. In get_logs_graylog(), add contextual error logging around requests.post()/raise_for_status() with tower/chunk/from_index before re-raising.
+5. Current duplicates/new_inserts stats are not fully accurate because they only detect duplicates already in DB, not duplicates inside the current batch. If we keep this logic, the log wording should be adjusted to avoid misleading numbers.
 
-4. In get_logs_graylog(), do not return [] for unexpected env values.
-   Raise ValueError instead, so config issues are not hidden as “no logs”.
-
-5. In store_data(), “stored X records” is misleading because ON DUPLICATE KEY UPDATE is really an upsert.
-   Please change wording to “upserted X records” or equivalent.
-
-6. Please add better error context around JSON parsing / Graylog parsing paths, so failures are easier to locate.
+Other than that, the overall exception handling and logging structure looks good.
