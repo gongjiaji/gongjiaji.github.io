@@ -1,29 +1,17 @@
-Please update the project documentation to reflect our finalized logging and exception handling design.
+Please fix these points in ds_command_logs.py:
 
-Keep it concise and practical. Focus on rules and conventions, not explanations.
+1. In get_logs_graylog(), do not silently break on non-200 response.
+   Use response.raise_for_status(), or log error and re-raise.
 
-Include:
+2. Do not silently skip records in get_logs_local() / get_logs_graylog().
+   Please add skip counters and log one summary line at the end, instead of many per-record warnings.
 
-1. Exception handling rules:
-   - Fatal errors must be raised
-   - No data is not an error
-   - Helper-level degradation must be visible (warning or summary)
+3. If max_iterations is reached, log a warning because results may be incomplete.
 
-2. Logging structure:
-   - Job-level (@log_job)
-   - Business-level (job_logger)
-   - Helper-level (only for degradation)
+4. In get_logs_graylog(), do not return [] for unexpected env values.
+   Raise ValueError instead, so config issues are not hidden as “no logs”.
 
-3. Exit code semantics:
-   - exit(0) = success (even if 0 records)
-   - exit(1) = failure
+5. In store_data(), “stored X records” is misleading because ON DUPLICATE KEY UPDATE is really an upsert.
+   Please change wording to “upserted X records” or equivalent.
 
-4. Logging format:
-   [<job_name>] [<run_id>] <message>
-
-5. Common anti-patterns to avoid:
-   - swallowing exceptions
-   - returning empty data on failure
-   - misleading log messages
-
-Do not add unnecessary explanations or generic logging theory.
+6. Please add better error context around JSON parsing / Graylog parsing paths, so failures are easier to locate.
