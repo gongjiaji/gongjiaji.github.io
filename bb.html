@@ -1,15 +1,25 @@
-I reviewed ds_command_logs.py again.
+There is a potential issue with session handling in the current design.
 
-Main issue before PROD:
-1. store_data() currently checks duplicates row by row with one DB query per log. This will become a bottleneck in PROD for large batches. We should avoid N queries here. Either:
-- remove exact duplicate/new_insert counting and just bulk upsert + log total/unique_crs, or
-- batch-load existing composite keys and compare in memory.
+We are using one SQLAlchemy session per CR and processing multiple questions within that session. If any database operation (e.g., insert/commit in `store_results`) fails for a question, the session may enter a failed state. Without an explicit `session.rollback()`, the same session is reused for subsequent questions, which can lead to:
 
-2. Please confirm all datetime values are normalized to the same format/type before _assign_sequence_numbers(). If some are timezone-aware and some are naive, sorting can fail in PROD.
+- subsequent `add()` / `commit()` calls failing
+- queries behaving unpredictably
+- later questions not being processed correctly even though the loop continues
 
-Non-blocking improvements:
-3. _create_log_entry() should return Dict[str, Any] | None, since it can return None.
-4. In get_logs_graylog(), add contextual error logging around requests.post()/raise_for_status() with tower/chunk/from_index before re-raising.
-5. Current duplicates/new_inserts stats are not fully accurate because they only detect duplicates already in DB, not duplicates inside the current batch. If we keep this logic, the log wording should be adjusted to avoid misleading numbers.
+This means the impact is not limited to a single question — it can affect all remaining questions in that CR.
 
-Other than that, the overall exception handling and logging structure looks good.
+We should ensure that after any exception during question processing, we call `session.rollback()` before continuing.
+
+Suggested change in `main()`:
+
+```python
+try:
+    await process_question(session, question, cr_number, data_cache)
+    total_stored += 1
+except Exception as e:
+    session.rollback()
+    job_logger.error(
+        f"[question_processing] [{cr_number}] question {question.question_id}: unhandled error - {e}"
+    )
+```
+Please confirm if this aligns with SQLAlchemy best practices and whether any additional safeguards are needed.
