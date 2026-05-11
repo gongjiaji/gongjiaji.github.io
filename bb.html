@@ -1,25 +1,25 @@
-There is a potential issue with session handling in the current design.
+Mostly correct. Please adjust these details before implementation:
 
-We are using one SQLAlchemy session per CR and processing multiple questions within that session. If any database operation (e.g., insert/commit in `store_results`) fails for a question, the session may enter a failed state. Without an explicit `session.rollback()`, the same session is reused for subsequent questions, which can lead to:
+1. Two-call approach is correct:
+   - After maker enters CR number, call controller to check whether the CR is active and checker is watching.
+   - After SSH to the device succeeds, call POST /api/sessions to create the actual session.
+   - Then start interactive shell.
 
-- subsequent `add()` / `commit()` calls failing
-- queries behaving unpredictably
-- later questions not being processed correctly even though the loop continues
+2. Add/use this endpoint for Phase 1:
+   GET /api/cr/{cr_number}/status
 
-This means the impact is not limited to a single question — it can affect all remaining questions in that CR.
+   It should return whether the CR is active and whether checker is currently watching.
 
-We should ensure that after any exception during question processing, we call `session.rollback()` before continuing.
+3. Phase 1 controller check should verify:
+   - controller health is ok
+   - CR is active
+   - checker is watching
 
-Suggested change in `main()`:
+4. Phase 2 session creation remains:
+   POST /api/sessions after SSH connection succeeds, before invoke_shell().
 
-```python
-try:
-    await process_question(session, question, cr_number, data_cache)
-    total_stored += 1
-except Exception as e:
-    session.rollback()
-    job_logger.error(
-        f"[question_processing] [{cr_number}] question {question.question_id}: unhandled error - {e}"
-    )
-```
-Please confirm if this aligns with SQLAlchemy best practices and whether any additional safeguards are needed.
+5. Create project structure inside current repo:
+   control_server/
+   maker_client/
+
+Proceed.
